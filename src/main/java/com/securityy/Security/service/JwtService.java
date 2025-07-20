@@ -67,10 +67,10 @@ public class JwtService {
             throw new IllegalArgumentException("Token is null or blank");
         }
 
-        // Remove Bearer prefix if exists
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
+//        // Remove Bearer prefix if exists
+//        if (token.startsWith("Bearer ")) {
+//            token = token.substring(7);
+//        }
 
         return Jwts
                 .parser()

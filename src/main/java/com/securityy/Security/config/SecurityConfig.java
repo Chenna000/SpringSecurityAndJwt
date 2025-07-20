@@ -32,20 +32,42 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+//
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(auth->auth
+//                        .requestMatchers("register","login").permitAll()
+//                                .anyRequest().authenticated()
+//                        )
+////                .formLogin(Customizer.withDefaults())   // ✅ enables form login
+//                .httpBasic(Customizer.withDefaults()
+//
+//                )
+//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);  // ✅ enables HTTP Basic login
+//
+//
+//        return http.build();
+//    }
+
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth->auth
-                        .requestMatchers("register","login").permitAll()
-                                .anyRequest().authenticated()
-                        )
-//                .formLogin(Customizer.withDefaults())   // ✅ enables form login
-                .httpBasic(Customizer.withDefaults()
-
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/greet", "/sw.js","register","login").permitAll() // public access
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);  // ✅ enables HTTP Basic login
+                .httpBasic(Customizer.withDefaults())
+
+              // ✅ enables HTTP Basic login
+
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("/greet", true) // redirect here after login
+                )
+                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)  ;
 
 
         return http.build();
